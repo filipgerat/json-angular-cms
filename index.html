@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" ng-app>
+	<head>
+		<title>Content management system for creating Json files</title>
+		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+
+		
+	</head>
+	<body ng-controller="AddController">
+		<form>
+			<span ng-model="article.id"></span>
+			<label for="article-title">Title: </label>
+			<input name="article-title" ng-model="article.title" placeholder="Insert title here" />
+			<label for="article-text">Contents: </label>
+			<input name="article-text" ng-model="article.text" placeholder="Insert text here" />
+			<button ng-click="addArticle()">Save</button>
+		</form>
+		
+		<h1 ng-bind="article.title"></h1>
+		<p ng-bind="article.text"></p>
+		<div>
+		 
+		<article ng-repeat="art in articles">			
+			<h1 ng-bind="art.title"></h1>
+			<p ng-bind="art.text"></p>
+		</article>
+		
+		<script src="js/angular.min.js"></script>		
+		<script>
+			function AddController($scope){
+				$scope.article = {};
+				$scope.articles = [
+					{ id : "0", text : "There seems to be a lot of them" , title: "Space Monkeys"},
+					{ id : "1", text : "There seems to be none" , title: "Space travellers"},
+					{ id : "2", text : "Some things would work the way we want" , title: "If only"}
+				];
+				
+				$scope.addArticle = function(){
+					$scope.article.id = $scope.articles.length;
+					$scope.articles.push($scope.article);
+					$scope.article = {};
+				};
+				
+				$scope.getCount = function() {
+					return $scope.articles.length;
+				};
+			}
+		</script>
+		
+	</body>
+</html>
