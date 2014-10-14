@@ -11,9 +11,10 @@ Goals:
 3. Simple array of articles. --Done
 4. Article deletion --Done
 5. Editing articles --Done
-6. Adding timestamps and authors
+6. Adding timestamps and authors --Done
 7. Formatting the article with HTML tags
 8. Saving the articles as a JSON file
+9. Optimalization + warnings/restrictions
 
 ----------
 Ideas for enhancement

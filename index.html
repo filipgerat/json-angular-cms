@@ -11,6 +11,10 @@
 			<form>
 				<span ng-model="article.id"></span>
 				<div class="form-group">
+					<label for="article-author">Author: </label>
+					<input class="form-control" name="article-author" ng-model="article.author" placeholder="Name" />
+				</div>
+				<div class="form-group">
 					<label for="article-title">Title: </label>
 					<input class="form-control" name="article-title" ng-model="article.title" placeholder="Insert title here" />
 				</div>
@@ -25,17 +29,23 @@
 			<span ng-bind="article.id"></span>
 			<h1 ng-bind="article.title"></h1>
 			<p ng-bind="article.text"></p>
+			<small>Created on <span ng-bind="article.created | date:formatDate"></span></small>
 			
 		</section>
 		
 		<section class="articles col-xs-6">
-			<article ng-repeat="art in articles">
-				<div class="col-xs-1" ng-bind="art.id"></div>
+			<article ng-repeat="item in articles">
+				<div class="col-xs-1" ng-bind="item.id"></div>
 				<div class="col-xs-11">
-					<h1 ng-bind="art.title"></h1>
-					<p ng-bind="art.text"></p>
-					<button ng-click="editArticle(art.id)">Edit</button>
-					<button ng-click="delArticle(art.id)">Delete</button>
+					<h1 ng-bind="item.title"></h1>
+					<h4>By <span ng-bind="item.author"></span></h4>
+					<p ng-bind="item.text"></p>
+					<small>
+						Created on <span ng-bind="item.created | date:formatDate"></span>.
+						Last edited on <span ng-bind="item.lastEdited |  date:formatDate"></span>.<br/>						
+					</small>
+					<button ng-click="editArticle(item.id)">Edit</button>
+					<button ng-click="delArticle(item.id)">Delete</button>
 				</div>
 			</article>
 		</section>
@@ -43,20 +53,25 @@
 		<script src="js/angular.min.js"></script>		
 		<script>
 			function AddController($scope){
+				$scope.formatDate = "dd.MM.yyyy; HH:mm:ss";
 				$scope.article = {};
 				$scope.articles = [
-					{ id : 0, text : "There seems to be a lot of them" , title: "Space Monkeys"},
-					{ id : 1, text : "There seems to be none" , title: "Space travellers"},
-					{ id : 2, text : "Some things would work the way we want" , title: "If only"}
+					{ id : 0, created: Date.now(), lastEdited: Date.now(), author: "NightOwl", text : "There seems to be a lot of them" , title: "Space Monkeys"},
+					{ id : 1, created: Date.now(), lastEdited: Date.now(), author: "NightOwl", text : "There seems to be none" , title: "Space travellers"},
+					{ id : 2, created: Date.now(), lastEdited: Date.now(), author: "NightOwl", text : "Some things would work the way we want" , title: "If only"}
 				];
 				
 				$scope.saveArticle = function(){
 					if ($scope.articles[$scope.article.id]){
 						$scope.articles[$scope.article.id].id = $scope.article.id;
+						$scope.articles[$scope.article.id].author = $scope.article.author;
 						$scope.articles[$scope.article.id].title = $scope.article.title;
 						$scope.articles[$scope.article.id].text = $scope.article.text;
+						$scope.articles[$scope.article.id].lastEdited = Date.now();
 					} else {
-						$scope.article.id = $scope.articles.length;
+						$scope.article.id = $scope.articles.length;						
+						$scope.article.created = Date.now();
+						$scope.article.lastEdited = Date.now();
 						$scope.articles.push($scope.article);
 						$scope.article = {};
 					}
@@ -64,6 +79,10 @@
 				
 				$scope.delArticle = function(place){
 					$scope.articles.splice(place,1);
+					if ($scope.article.id){
+						if (place < $scope.article.id) $scope.article.id--;
+						if (place == $scope.article.id) $scope.article.id = "";
+					}
 					while ($scope.articles[place].id){
 						$scope.articles[place].id--;
 						place++;
@@ -72,8 +91,11 @@
 				
 				$scope.editArticle = function(id){
 					$scope.article.id = $scope.articles[id].id;
+					$scope.article.author = $scope.articles[id].author;
 					$scope.article.title = $scope.articles[id].title;
 					$scope.article.text = $scope.articles[id].text;
+					$scope.article.created = $scope.articles[id].created;
+					$scope.article.lastEdited = $scope.articles[id].lastEdited;
 				}
 				
 				$scope.newArticle = function(){
