@@ -10,7 +10,7 @@ Goals:
 2. Hello world Angular! --Done
 3. Simple array of articles. --Done
 4. Article deletion --Done
-5. Editing articles
+5. Editing articles --Done
 6. Adding timestamps and authors
 7. Formatting the article with HTML tags
 8. Saving the articles as a JSON file

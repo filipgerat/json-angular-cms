@@ -18,9 +18,11 @@
 					<label for="article-text">Contents: </label>
 					<input class="form-control"  name="article-text" ng-model="article.text" placeholder="Insert text here" />
 				</div>
-				<button ng-click="addArticle()">Save</button>
+				<button ng-click="saveArticle()">Save</button>
+				<button ng-click="newArticle()">New article</button>
 			</form>
-		
+			
+			<span ng-bind="article.id"></span>
 			<h1 ng-bind="article.title"></h1>
 			<p ng-bind="article.text"></p>
 			
@@ -32,6 +34,7 @@
 				<div class="col-xs-11">
 					<h1 ng-bind="art.title"></h1>
 					<p ng-bind="art.text"></p>
+					<button ng-click="editArticle(art.id)">Edit</button>
 					<button ng-click="delArticle(art.id)">Delete</button>
 				</div>
 			</article>
@@ -47,10 +50,16 @@
 					{ id : 2, text : "Some things would work the way we want" , title: "If only"}
 				];
 				
-				$scope.addArticle = function(){
-					$scope.article.id = $scope.articles.length;
-					$scope.articles.push($scope.article);
-					$scope.article = {};
+				$scope.saveArticle = function(){
+					if ($scope.articles[$scope.article.id]){
+						$scope.articles[$scope.article.id].id = $scope.article.id;
+						$scope.articles[$scope.article.id].title = $scope.article.title;
+						$scope.articles[$scope.article.id].text = $scope.article.text;
+					} else {
+						$scope.article.id = $scope.articles.length;
+						$scope.articles.push($scope.article);
+						$scope.article = {};
+					}
 				};
 				
 				$scope.delArticle = function(place){
@@ -59,6 +68,16 @@
 						$scope.articles[place].id--;
 						place++;
 					};
+				}
+				
+				$scope.editArticle = function(id){
+					$scope.article.id = $scope.articles[id].id;
+					$scope.article.title = $scope.articles[id].title;
+					$scope.article.text = $scope.articles[id].text;
+				}
+				
+				$scope.newArticle = function(){
+					$scope.article = {};
 				}
 				
 				$scope.getCount = function() {
