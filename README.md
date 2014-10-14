@@ -9,7 +9,7 @@ Goals:
 1. Set up Git --Done
 2. Hello world Angular! --Done
 3. Simple array of articles. --Done
-4. Article deletion
+4. Article deletion --Done
 5. Editing articles
 6. Adding timestamps and authors
 7. Formatting the article with HTML tags

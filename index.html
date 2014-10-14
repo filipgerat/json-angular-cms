@@ -7,32 +7,44 @@
 		
 	</head>
 	<body ng-controller="AddController">
-		<form>
-			<span ng-model="article.id"></span>
-			<label for="article-title">Title: </label>
-			<input name="article-title" ng-model="article.title" placeholder="Insert title here" />
-			<label for="article-text">Contents: </label>
-			<input name="article-text" ng-model="article.text" placeholder="Insert text here" />
-			<button ng-click="addArticle()">Save</button>
-		</form>
+		<section class="editor col-xs-6">
+			<form>
+				<span ng-model="article.id"></span>
+				<div class="form-group">
+					<label for="article-title">Title: </label>
+					<input class="form-control" name="article-title" ng-model="article.title" placeholder="Insert title here" />
+				</div>
+				<div class="form-group">
+					<label for="article-text">Contents: </label>
+					<input class="form-control"  name="article-text" ng-model="article.text" placeholder="Insert text here" />
+				</div>
+				<button ng-click="addArticle()">Save</button>
+			</form>
 		
-		<h1 ng-bind="article.title"></h1>
-		<p ng-bind="article.text"></p>
-		<div>
-		 
-		<article ng-repeat="art in articles">			
-			<h1 ng-bind="art.title"></h1>
-			<p ng-bind="art.text"></p>
-		</article>
+			<h1 ng-bind="article.title"></h1>
+			<p ng-bind="article.text"></p>
+			
+		</section>
+		
+		<section class="articles col-xs-6">
+			<article ng-repeat="art in articles">
+				<div class="col-xs-1" ng-bind="art.id"></div>
+				<div class="col-xs-11">
+					<h1 ng-bind="art.title"></h1>
+					<p ng-bind="art.text"></p>
+					<button ng-click="delArticle(art.id)">Delete</button>
+				</div>
+			</article>
+		</section>
 		
 		<script src="js/angular.min.js"></script>		
 		<script>
 			function AddController($scope){
 				$scope.article = {};
 				$scope.articles = [
-					{ id : "0", text : "There seems to be a lot of them" , title: "Space Monkeys"},
-					{ id : "1", text : "There seems to be none" , title: "Space travellers"},
-					{ id : "2", text : "Some things would work the way we want" , title: "If only"}
+					{ id : 0, text : "There seems to be a lot of them" , title: "Space Monkeys"},
+					{ id : 1, text : "There seems to be none" , title: "Space travellers"},
+					{ id : 2, text : "Some things would work the way we want" , title: "If only"}
 				];
 				
 				$scope.addArticle = function(){
@@ -40,6 +52,14 @@
 					$scope.articles.push($scope.article);
 					$scope.article = {};
 				};
+				
+				$scope.delArticle = function(place){
+					$scope.articles.splice(place,1);
+					while ($scope.articles[place].id){
+						$scope.articles[place].id--;
+						place++;
+					};
+				}
 				
 				$scope.getCount = function() {
 					return $scope.articles.length;
