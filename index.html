@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en" ng-app>
+<html lang="en" ng-app="cmsApp">
 	<head>
 		<title>Content management system for creating Json files</title>
 		<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
@@ -20,15 +20,17 @@
 				</div>
 				<div class="form-group">
 					<label for="article-text">Contents: </label>
-					<input class="form-control"  name="article-text" ng-model="article.text" placeholder="Insert text here" />
+					<textarea id="contents" class="form-control"  name="article-text" ng-change="changed()" ng-click="changed()" ng-model="article.text" placeholder="Insert text here"></textarea>
 				</div>
+				<button ng-click="addElement('<p>','</p>')">&para;</button>
+				<button ng-click="addElement('<b>','</b>')"><b>B</b></button>
 				<button ng-click="saveArticle()">Save</button>
 				<button ng-click="newArticle()">New article</button>
 			</form>
 			
 			<span ng-bind="article.id"></span>
 			<h1 ng-bind="article.title"></h1>
-			<p ng-bind="article.text"></p>
+			<p ng-bind-html="article.text"></p>
 			<small>Created on <span ng-bind="article.created | date:formatDate"></span></small>
 			
 		</section>
@@ -39,7 +41,7 @@
 				<div class="col-xs-11">
 					<h1 ng-bind="item.title"></h1>
 					<h4>By <span ng-bind="item.author"></span></h4>
-					<p ng-bind="item.text"></p>
+					<p ng-bind-html="item.text"></p>
 					<small>
 						Created on <span ng-bind="item.created | date:formatDate"></span>.
 						Last edited on <span ng-bind="item.lastEdited |  date:formatDate"></span>.<br/>						
@@ -50,16 +52,42 @@
 			</article>
 		</section>
 		
-		<script src="js/angular.min.js"></script>		
+		<script src="js/angular.min.js"></script>
+		<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.3.0/angular-sanitize.js"></script>
+		<script src="js/jquery.min.js"></script>	
+		<script src="js/jquery-elastic.js"></script>
+		<script src="js/jquery-textrange.js"></script>		
 		<script>
-			function AddController($scope){
+			String.prototype.splice = function( idx, rem, s ) {
+				return (this.slice(0,idx) + s + this.slice(idx + rem));
+			};
+			$('#contents').elastic();
+			
+			var cmsApp = angular.module("cmsApp", ["ngSanitize"]);
+			
+			cmsApp.controller("AddController", function($scope) {
 				$scope.formatDate = "dd.MM.yyyy; HH:mm:ss";
-				$scope.article = {};
+				$scope.article = {author:"",text:"",title:""};
 				$scope.articles = [
 					{ id : 0, created: Date.now(), lastEdited: Date.now(), author: "NightOwl", text : "There seems to be a lot of them" , title: "Space Monkeys"},
 					{ id : 1, created: Date.now(), lastEdited: Date.now(), author: "NightOwl", text : "There seems to be none" , title: "Space travellers"},
 					{ id : 2, created: Date.now(), lastEdited: Date.now(), author: "NightOwl", text : "Some things would work the way we want" , title: "If only"}
 				];
+				$scope.textInfo = {};				
+							
+				$scope.addElement = function(str1, str2) {
+				    if (str2){
+						$scope.article.text = $scope.article.text.splice($scope.textInfo.end, 0, str2);
+						$scope.article.text = $scope.article.text.splice($scope.textInfo.start, 0, str1);
+					} else {
+						$scope.article.text = $scope.article.text.splice($scope.textInfo.start, 0, str1);						
+					}
+					$('#contents').focus();
+				}
+				
+				$scope.changed = function() {
+					$scope.textInfo = $('#contents').textrange('get');
+				}
 				
 				$scope.saveArticle = function(){
 					if ($scope.articles[$scope.article.id]){
@@ -80,8 +108,8 @@
 				$scope.delArticle = function(place){
 					$scope.articles.splice(place,1);
 					if ($scope.article.id){
-						if (place < $scope.article.id) $scope.article.id--;
 						if (place == $scope.article.id) $scope.article.id = "";
+						if (place < $scope.article.id) $scope.article.id--;
 					}
 					while ($scope.articles[place].id){
 						$scope.articles[place].id--;
@@ -99,13 +127,13 @@
 				}
 				
 				$scope.newArticle = function(){
-					$scope.article = {};
+					$scope.article = {author:"",text:"",title:""};
 				}
 				
 				$scope.getCount = function() {
 					return $scope.articles.length;
 				};
-			}
+			});
 		</script>
 		
 	</body>
